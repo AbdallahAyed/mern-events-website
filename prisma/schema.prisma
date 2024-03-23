@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  clerkId   String  @unique
+  email     String  @unique
+  username  String  @unique
+  firstName String
+  lastName  String
+  photo     String
+  Event     Event[]
+  Order     Order[]
+}
+
+model Event {
+  id            Int      @id @default(autoincrement())
+  title         String   @unique
+  description   String?
+  location      String?
+  createdAt     DateTime @default(now())
+  imageUrl      String   @unique
+  startDateTime DateTime
+  endDateTime   DateTime
+  price         Decimal?
+  isFree        Boolean  @default(false)
+  url           String?
+
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  organizer   User     @relation(fields: [organizerId], references: [id])
+  organizerId Int
+  Order       Order[]
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  Event Event[]
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  stripeId    String   @unique
+  totalAmount Decimal
+
+  event   Event @relation(fields: [eventId], references: [id])
+  eventId Int
+  buyer   User  @relation(fields: [buyerId], references: [id])
+  buyerId Int
+}
