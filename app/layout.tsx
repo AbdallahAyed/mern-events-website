@@ -28,10 +28,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`flex min-h-screen flex-col ${poppins.variable}`}>
-          <Header />
-          {children}
-          <Footer />
+        <body className={`${poppins.variable}`}>
+          <div className="flex flex-col justify-between min-h-screen">
+            {" "}
+            <Header />
+            {children}
+            <Footer />
+          </div>
         </body>
       </html>
     </ClerkProvider>
