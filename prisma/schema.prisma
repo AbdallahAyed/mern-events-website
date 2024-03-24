@@ -14,15 +14,16 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  clerkId   String  @unique
-  email     String  @unique
-  username  String  @unique
+  id        Int      @id @default(autoincrement())
+  clerkId   String   @unique
+  email     String   @unique
+  username  String   @unique
   firstName String
   lastName  String
   photo     String
-  Event     Event[]
-  Order     Order[]
+  new       Boolean?
+  events    Event[]
+  orders    Order[]
 }
 
 model Event {
@@ -40,9 +41,10 @@ model Event {
 
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  Int
-  organizer   User     @relation(fields: [organizerId], references: [id])
+  organizer   User?    @relation(fields: [organizerId], references: [id])
   organizerId Int
   Order       Order[]
+  isCancelled Boolean
 }
 
 model Category {
@@ -59,6 +61,6 @@ model Order {
 
   event   Event @relation(fields: [eventId], references: [id])
   eventId Int
-  buyer   User  @relation(fields: [buyerId], references: [id])
+  buyer   User? @relation(fields: [buyerId], references: [id])
   buyerId Int
 }
