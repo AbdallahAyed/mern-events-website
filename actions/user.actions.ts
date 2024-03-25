@@ -14,20 +14,6 @@ export const createUser = async (user: any) => {
   }
 };
 
-export async function getUserById(userId: number) {
-  try {
-    const user = await db.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) throw new Error("User not found");
-    return user;
-  } catch (error) {
-    handleError(error);
-  }
-}
-
 export const updateUser = async (clerkId: string, user: any) => {
   try {
     await db.user.update({
@@ -93,3 +79,17 @@ export const deleteUser = async (clerkId: string) => {
     handleError(error);
   }
 };
+
+export async function getUserById(userId: number) {
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) throw new Error("User not found");
+    return user;
+  } catch (error) {
+    handleError(error);
+  }
+}
