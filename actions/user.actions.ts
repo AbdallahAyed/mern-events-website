@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export const createUser = async (user: any) => {
   try {
-    const newUser = await db.user.create(user);
+    const newUser = await db.user.create({ data: user });
 
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
