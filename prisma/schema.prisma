@@ -17,7 +17,7 @@ model User {
   id        Int      @id @default(autoincrement())
   clerkId   String   @unique
   email     String   @unique
-  username  String   @unique
+  username  String?   @unique
   firstName String
   lastName  String
   photo     String
