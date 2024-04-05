@@ -66,15 +66,6 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 .filter-grey {
   filter: brightness(0) saturate(100%) invert(47%) sepia(0%) saturate(217%)
     hue-rotate(32deg) brightness(98%) contrast(92%);
