@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 
 type FileUploaderProps = {
   onFieldChange: (url: string) => void;
-  imageUrl: string;
+  imageUrl: string | undefined;
   setFiles: Dispatch<SetStateAction<File[]>>;
 };
 

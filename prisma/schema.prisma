@@ -27,7 +27,7 @@ model User {
 }
 
 model Event {
-  id            String   @unique
+  id            Int      @id @default(autoincrement())
   title         String   @unique
   description   String?
   location      String?
@@ -42,9 +42,9 @@ model Event {
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  Int
   organizer   User?    @relation(fields: [organizerId], references: [clerkId])
-  organizerId String   @unique
+  organizerId String
   Order       Order[]
-  isCancelled Boolean
+  isCancelled Boolean?
 }
 
 model Category {
@@ -59,8 +59,8 @@ model Order {
   stripeId    String   @unique
   totalAmount Decimal
 
-  event   Event  @relation(fields: [eventId], references: [id])
-  eventId String @unique
-  buyer   User?  @relation(fields: [buyerId], references: [id])
+  event   Event @relation(fields: [eventId], references: [id])
+  eventId Int   @unique
+  buyer   User? @relation(fields: [buyerId], references: [id])
   buyerId Int
 }

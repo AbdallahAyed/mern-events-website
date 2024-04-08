@@ -31,7 +31,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { createEvent } from "@/actions/event.actions";
 
 type EventFormProps = {
-  userId: string;
+  userId: string | null;
   type: "Create" | "Update";
   event?: Event;
   eventId?: string;
@@ -52,6 +52,8 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
     let uploadedImageUrl = values.imageUrl;
 
+    console.log(values);
+
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
 
@@ -65,8 +67,8 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     if (type === "Create") {
       try {
         const newEvent = await createEvent({
-          event: { ...values, imageUrl: uploadedImageUrl },
           userId,
+          event: { ...values, imageUrl: uploadedImageUrl },
           path: "/profile",
         });
 
