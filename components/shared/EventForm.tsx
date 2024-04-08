@@ -28,7 +28,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 
 import "@uploadthing/react/styles.css";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { createEvent } from "@/actions/event.actions";
 
 type EventFormProps = {
   userId: string;
@@ -49,7 +49,36 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 
   const { startUpload } = useUploadThing("imageUploader");
 
-  const onSubmit = () => {};
+  const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
+    let uploadedImageUrl = values.imageUrl;
+
+    if (files.length > 0) {
+      const uploadedImages = await startUpload(files);
+
+      if (!uploadedImages) {
+        return;
+      }
+
+      uploadedImageUrl = uploadedImages[0].url;
+    }
+
+    if (type === "Create") {
+      try {
+        const newEvent = await createEvent({
+          event: { ...values, imageUrl: uploadedImageUrl },
+          userId,
+          path: "/profile",
+        });
+
+        if (newEvent) {
+          form.reset();
+          router.push(`/events/${newEvent.id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <Form {...form}>
