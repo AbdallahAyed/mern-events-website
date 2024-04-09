@@ -2,7 +2,11 @@
 
 import { db } from "@/lib/db";
 import { handleError } from "@/lib/utils";
-import { EventParams, GetRelatedEventsByCategoryParams } from "@/types";
+import {
+  EventParams,
+  GetAllEventsParams,
+  GetRelatedEventsByCategoryParams,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 
 const getCategoryByName = async (name: string) => {
@@ -107,4 +111,40 @@ export async function getRelatedEventsByCategory({
   } catch (error) {
     handleError(error);
   }
+}
+
+// GET ALL EVENTS
+export async function getAllEvents({
+  query,
+  limit,
+  page,
+  category,
+}: GetAllEventsParams) {
+  const skip = (page - 1) * limit;
+
+  const events = await db.event.findMany({
+    where: {
+      title: { contains: query, mode: "insensitive" }, // Adjust filtering based on your needs
+      category: category ? { name: category } : undefined,
+    },
+    include: {
+      organizer: true,
+      category: true,
+    },
+    orderBy: { createdAt: "desc" },
+    skip,
+    take: limit,
+  });
+
+  const eventsCount = await db.event.count({
+    where: {
+      title: { contains: query, mode: "insensitive" }, // Adjust filtering based on your needs
+      category: category ? { name: category } : undefined,
+    },
+  });
+
+  return {
+    data: events,
+    totalPages: Math.ceil(eventsCount / limit),
+  };
 }

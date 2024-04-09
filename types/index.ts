@@ -10,9 +10,11 @@ export type EventParams = {
   path: string;
 };
 
-export type SearchParamProps = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+export type GetAllEventsParams = {
+  query: string;
+  category: string;
+  limit: number;
+  page: number;
 };
 
 export type GetRelatedEventsByCategoryParams = {
@@ -27,4 +29,9 @@ export type UrlQueryParams = {
   params: string;
   key: string;
   value: string | null;
+};
+
+export type SearchParamProps = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };

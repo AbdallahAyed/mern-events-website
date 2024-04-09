@@ -2,8 +2,22 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
+import Collection from "@/components/shared/Collection";
+import { SearchParamProps } from "@/types";
+import { getAllEvents } from "@/actions/event.actions";
 
-export default function Home() {
+export default async function Home({ searchParams }: SearchParamProps) {
+  const page = Number(searchParams?.page) || 1;
+  const searchText = (searchParams?.query as string) || "";
+  const category = (searchParams?.category as string) || "";
+
+  const events = await getAllEvents({
+    query: searchText,
+    category,
+    page,
+    limit: 6,
+  });
+
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
@@ -37,6 +51,16 @@ export default function Home() {
         <h2 className="h2-bold">
           Trust by <br /> Thousands of Events
         </h2>
+
+        <Collection
+          data={events?.data}
+          emptyTitle="No Events Found"
+          emptyStateSubtext="Come back later"
+          collectionType="All_Events"
+          limit={6}
+          page={page}
+          totalPages={events?.totalPages}
+        />
       </section>
     </>
   );
