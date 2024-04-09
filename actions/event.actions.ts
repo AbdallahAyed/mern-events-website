@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { handleError } from "@/lib/utils";
-import { EventParams } from "@/types";
+import { EventParams, GetRelatedEventsByCategoryParams } from "@/types";
 import { revalidatePath } from "next/cache";
 
 const getCategoryByName = async (name: string) => {
@@ -40,6 +40,21 @@ export async function createEvent({ userId, event, path }: any) {
   }
 }
 
+// DELETE
+export async function deleteEvent({ eventId, path }: any) {
+  try {
+    const deletedEvent = await db.event.delete({
+      where: {
+        id: eventId,
+      },
+    });
+
+    if (deletedEvent) revalidatePath(path);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // GET ONE EVENT BY ID
 export async function getEventById(eventId: number) {
   try {
@@ -54,6 +69,41 @@ export async function getEventById(eventId: number) {
     if (!event) throw new Error("Event not found");
 
     return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// GET RELATED EVENTS: EVENTS WITH SAME CATEGORY
+export async function getRelatedEventsByCategory({
+  categoryId,
+  eventId,
+  limit = 3,
+  page = 1,
+}: GetRelatedEventsByCategoryParams) {
+  try {
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const events = await db.event.findMany({
+      where: {
+        AND: [{ categoryId }, { id: { not: eventId } }],
+      },
+      include: {
+        organizer: true,
+        category: true,
+      },
+      orderBy: { createdAt: "desc" },
+      skip: skipAmount,
+      take: limit,
+    });
+
+    const eventsCount = await db.event.count({
+      where: {
+        AND: [{ categoryId }, { id: { not: eventId } }],
+      },
+    });
+
+    return { data: events, totalPages: Math.ceil(eventsCount / limit) };
   } catch (error) {
     handleError(error);
   }

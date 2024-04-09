@@ -1,3 +1,4 @@
+import { UrlQueryParams } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import qs from "querystring";
 import { twMerge } from "tailwind-merge";
@@ -50,6 +51,17 @@ export const formatDateTime = (dateString: Date) => {
     timeOnly: formattedTime,
   };
 };
+
+export function formUrlQuery({ params, key, value }: any) {
+  const currentUrl = qs.parse(params);
+  currentUrl[key] = value;
+
+  // Change return type to object with url and query properties
+  return {
+    url: window.location.pathname,
+    query: currentUrl,
+  };
+}
 
 export const handleError = (error: unknown) => {
   console.error(error);

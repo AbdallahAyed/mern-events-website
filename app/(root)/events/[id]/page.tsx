@@ -1,8 +1,12 @@
 import Image from "next/image";
 
-import { getEventById } from "@/actions/event.actions";
+import {
+  getEventById,
+  getRelatedEventsByCategory,
+} from "@/actions/event.actions";
 import { SearchParamProps } from "@/types";
 import { formatDateTime } from "@/lib/utils";
+import Collection from "@/components/shared/Collection";
 
 export default async function EventDetails({
   params: { id },
@@ -10,16 +14,22 @@ export default async function EventDetails({
 }: SearchParamProps) {
   const event = await getEventById(parseInt(id));
 
+  const relatedEvents = await getRelatedEventsByCategory({
+    categoryId: event.category.id,
+    eventId: event.id,
+    page: searchParams.page as string,
+  });
+
   return (
     <>
-      <section className="flex justify-center bg-primary-50 bg-dotted-pattern bg-contain">
+      <section className="flex justify-center bg-primary-50 bg-dotted-pattern bg-contain m-2.5">
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:max-w-7xl">
           <Image
             src={event.imageUrl}
             alt="hero image"
             width={1000}
             height={1000}
-            className="h-full min-h-[300px] object-cover object-center rounded-md ml-2"
+            className="h-full min-h-[300px] object-cover object-center rounded-md"
           />
 
           <div className="flex w-full flex-col gap-8 p-5 md:p-10">
@@ -87,6 +97,21 @@ export default async function EventDetails({
             </div>
           </div>
         </div>
+      </section>
+
+      {/* EVENTS with the same category */}
+      <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
+        <h2 className="h2-bold">Related Events</h2>
+
+        <Collection
+          data={relatedEvents?.data}
+          emptyTitle="No Events Found"
+          emptyStateSubtext="Come back later"
+          collectionType="All_Events"
+          limit={3}
+          page={searchParams.page as string}
+          totalPages={relatedEvents?.totalPages}
+        />
       </section>
     </>
   );
