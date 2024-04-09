@@ -5,3 +5,8 @@ export type EventParams = {
   event?: Event;
   path: string;
 };
+
+export type SearchParamProps = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};

@@ -26,7 +26,7 @@ import { FileUploader } from "./FileUploader";
 import { Button } from "../ui/button";
 import { useUploadThing } from "@/lib/uploadthing";
 
-import "@uploadthing/react/styles.css";
+// import "@uploadthing/react/styles.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { createEvent } from "@/actions/event.actions";
 

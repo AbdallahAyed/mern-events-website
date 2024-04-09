@@ -41,18 +41,20 @@ export async function createEvent({ userId, event, path }: any) {
 }
 
 // GET ONE EVENT BY ID
-// export async function getEventById(eventId: string) {
-//   try {
-//     const event = await db.event.findUnique({
-//       where: { id: eventId },
-//       include: {
-//         organizer: { select: { id: true, firstName: true, lastName: true } },
-//         category: { select: { id: true, name: true } },
-//       },
-//     });
+export async function getEventById(eventId: number) {
+  try {
+    const event = await db.event.findUnique({
+      where: { id: eventId },
+      include: {
+        organizer: { select: { id: true, firstName: true, lastName: true } },
+        category: { select: { id: true, name: true } },
+      },
+    });
 
-//     if (!event) throw new Error("Event not found");
-//   } catch (error) {
-//     handleError(error);
-//   }
-// }
+    if (!event) throw new Error("Event not found");
+
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
