@@ -28,7 +28,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 
 // import "@uploadthing/react/styles.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { createEvent } from "@/actions/event.actions";
+import { createEvent, updateEvent } from "@/actions/event.actions";
 
 type EventFormProps = {
   userId: string | null;
@@ -75,6 +75,28 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
         if (newEvent) {
           form.reset();
           router.push(`/events/${newEvent.id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (type === "Update") {
+      if (!eventId) {
+        router.back();
+        return;
+      }
+
+      try {
+        const updatedEvent = await updateEvent({
+          userId,
+          event: { ...values, imageUrl: uploadedImageUrl, id: eventId },
+          path: `/events/${eventId}`,
+        });
+
+        if (updatedEvent) {
+          form.reset();
+          router.push(`/events/${updatedEvent.id}`);
         }
       } catch (error) {
         console.log(error);

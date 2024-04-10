@@ -148,3 +148,34 @@ export async function getAllEvents({
     totalPages: Math.ceil(eventsCount / limit),
   };
 }
+
+// UPDATE
+export async function updateEvent({ userId, event, path }: any) {
+  try {
+    const eventToUpdate = await db.event.findUnique({
+      where: {
+        id: event.id,
+      },
+      include: {
+        organizer: true,
+      },
+    });
+
+    if (!eventToUpdate || eventToUpdate.organizer?.clerkId !== userId) {
+      throw new Error("Unauthorized or event not found");
+    }
+
+    const updatedEvent = await db.event.update({
+      where: {
+        id: event.id,
+      },
+      data: { ...event, categoryId: event.categoryId },
+    });
+
+    revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedEvent));
+  } catch (error) {
+    handleError(error);
+  }
+}
