@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { handleError } from "@/lib/utils";
 import {
   EventParams,
+  EventWithOrganizer,
   GetAllEventsParams,
   GetRelatedEventsByCategoryParams,
 } from "@/types";
@@ -150,7 +151,11 @@ export async function getAllEvents({
 }
 
 // UPDATE
-export async function updateEvent({ userId, event, path }: any) {
+export async function updateEvent(
+  userId: string | null,
+  event: EventParams,
+  path: string
+) {
   try {
     const eventToUpdate = await db.event.findUnique({
       where: {
@@ -166,15 +171,23 @@ export async function updateEvent({ userId, event, path }: any) {
     }
 
     const updatedEvent = await db.event.update({
-      where: {
-        id: event.id,
+      where: { id: event.id },
+      data: {
+        title: event.title,
+        description: event.description,
+        location: event.location,
+        imageUrl: event.imageUrl,
+        startDateTime: event.startDateTime,
+        endDateTime: event.endDateTime,
+        price: event.price,
+        url: event.url,
+        isFree: event.isFree,
       },
-      data: { ...event, categoryId: event.categoryId },
     });
 
     revalidatePath(path);
 
-    return JSON.parse(JSON.stringify(updatedEvent));
+    return updatedEvent;
   } catch (error) {
     handleError(error);
   }

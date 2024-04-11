@@ -5,9 +5,16 @@ export type EventWithOrganizer = Prisma.EventGetPayload<{
 }>;
 
 export type EventParams = {
-  userId: string;
-  event?: Event;
-  path: string;
+  id: number;
+  title: string;
+  description: string | null;
+  location: string | null;
+  imageUrl: string;
+  startDateTime: Date;
+  endDateTime: Date;
+  price: string;
+  url: string;
+  isFree: boolean;
 };
 
 export type GetAllEventsParams = {

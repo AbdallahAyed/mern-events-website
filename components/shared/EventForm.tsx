@@ -34,12 +34,28 @@ type EventFormProps = {
   userId: string | null;
   type: "Create" | "Update";
   event?: Event;
-  eventId?: string;
+  eventId?: number;
 };
 
 export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const initialValues = eventDefaultValues;
+
+  const initialValues =
+    event && type === "Update"
+      ? {
+          title: event?.title,
+          description: event?.description ?? "", // Provide a default value if description is null
+          location: event?.location,
+          imageUrl: event?.imageUrl,
+          startDateTime: new Date(event?.startDateTime),
+          endDateTime: new Date(event?.endDateTime),
+          categoryId: event?.categoryId,
+          price: event?.price,
+          isFree: event?.isFree,
+          url: event?.url,
+        }
+      : eventDefaultValues;
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
@@ -51,8 +67,6 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
     let uploadedImageUrl = values.imageUrl;
-
-    console.log(values);
 
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
@@ -88,13 +102,19 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       }
 
       try {
-        const updatedEvent = await updateEvent({
+        const updatedEvent = await updateEvent(
           userId,
-          event: { ...values, imageUrl: uploadedImageUrl, id: eventId },
-          path: `/events/${eventId}`,
-        });
+          {
+            ...values,
+            imageUrl: uploadedImageUrl,
+            id: eventId,
+          },
+          `/events/${eventId}`
+        );
 
         if (updatedEvent) {
+          console.log(updatedEvent);
+
           form.reset();
           router.push(`/events/${updatedEvent.id}`);
         }
