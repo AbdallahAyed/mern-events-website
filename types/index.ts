@@ -15,6 +15,7 @@ export type EventParams = {
   price: string;
   url: string;
   isFree: boolean;
+  categoryId: string;
 };
 
 export type GetAllEventsParams = {

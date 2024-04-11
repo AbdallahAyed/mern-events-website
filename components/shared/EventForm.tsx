@@ -49,7 +49,7 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           imageUrl: event?.imageUrl,
           startDateTime: new Date(event?.startDateTime),
           endDateTime: new Date(event?.endDateTime),
-          categoryId: event?.categoryId,
+          // categoryId: event?.categoryId,
           price: event?.price,
           isFree: event?.isFree,
           url: event?.url,
@@ -113,8 +113,6 @@ export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
         );
 
         if (updatedEvent) {
-          console.log(updatedEvent);
-
           form.reset();
           router.push(`/events/${updatedEvent.id}`);
         }

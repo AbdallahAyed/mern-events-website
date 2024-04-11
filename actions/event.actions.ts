@@ -182,6 +182,11 @@ export async function updateEvent(
         price: event.price,
         url: event.url,
         isFree: event.isFree,
+        category: {
+          connect: {
+            id: parseInt(event?.categoryId),
+          },
+        },
       },
     });
 
