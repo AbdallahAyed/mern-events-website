@@ -40,19 +40,23 @@ type EventFormProps = {
 export const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
 
-  const initialValues =
+  const price: string =
+    typeof event?.price === "string"
+      ? event?.price
+      : event?.price?.toString() ?? "";
+
+  const initialValues: Partial<z.infer<typeof eventFormSchema>> =
     event && type === "Update"
       ? {
           title: event?.title,
-          description: event?.description ?? "", // Provide a default value if description is null
-          location: event?.location,
+          description: event?.description ?? "",
+          location: event?.location ?? "",
           imageUrl: event?.imageUrl,
           startDateTime: new Date(event?.startDateTime),
           endDateTime: new Date(event?.endDateTime),
-          // categoryId: event?.categoryId,
-          price: event?.price,
-          isFree: event?.isFree,
-          url: event?.url,
+          price: price, // Assign price converted to string
+          isFree: event?.isFree ?? false,
+          url: event?.url ?? "",
         }
       : eventDefaultValues;
 
