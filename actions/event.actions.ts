@@ -6,6 +6,7 @@ import {
   EventParams,
   EventWithOrganizer,
   GetAllEventsParams,
+  GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
 } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -193,6 +194,39 @@ export async function updateEvent(
     revalidatePath(path);
 
     return updatedEvent;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getEventsByUser({
+  userId,
+  limit = 6,
+  page,
+}: GetEventsByUserParams) {
+  try {
+    const skipAmount = (page - 1) * limit;
+
+    const events = await db.event.findMany({
+      where: { organizerId: userId as string },
+      include: {
+        organizer: {
+          select: { id: true, firstName: true, lastName: true },
+        },
+        category: {
+          select: { id: true, name: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: skipAmount,
+      take: limit,
+    });
+
+    const eventsCount = await db.event.count({
+      where: { organizerId: userId as string },
+    });
+
+    return { data: events, totalPages: Math.ceil(eventsCount / limit) };
   } catch (error) {
     handleError(error);
   }

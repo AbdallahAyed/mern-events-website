@@ -4,9 +4,14 @@ import { auth } from "@clerk/nextjs";
 import { SearchParamProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import Collection from "@/components/shared/Collection";
+import { getEventsByUser } from "@/actions/event.actions";
 
 export default async function ProfilePage({ searchParams }: SearchParamProps) {
   const { userId } = auth();
+
+  const eventsPage = Number(searchParams?.eventsPage) || 1;
+
+  const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
 
   return (
     <>
@@ -33,26 +38,25 @@ export default async function ProfilePage({ searchParams }: SearchParamProps) {
       </section>
 
       {/* Events Organized */}
-      <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
+      <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5  md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
           <h3 className="h3-bold text-center sm:text-left">Events Organized</h3>
           <Button asChild size="lg" className="button hidden sm:flex">
             <Link href="/events/create">Create New Event</Link>
           </Button>
         </div>
-      </section>
-
-      <section className="wrapper my-8">
-        {/* <Collection
-          data={organizedEvents?.data}
-          emptyTitle="No events have been created yet"
-          emptyStateSubtext="Go create some now"
-          collectionType="Events_Organized"
-          limit={3}
-          page={eventsPage}
-          urlParamName="eventsPage"
-          totalPages={organizedEvents?.totalPages}
-        />*/}
+        <div className="wrapper my-8">
+          <Collection
+            data={organizedEvents?.data ? organizedEvents.data : []}
+            emptyTitle="No events have been created yet"
+            emptyStateSubtext="Go create some now"
+            collectionType="Events_Organized"
+            limit={3}
+            page={eventsPage}
+            urlParamName="eventsPage"
+            totalPages={organizedEvents?.totalPages}
+          />
+        </div>
       </section>
     </>
   );
