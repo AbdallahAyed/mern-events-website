@@ -104,13 +104,13 @@ export default async function EventDetails({
         <h2 className="h2-bold">Related Events</h2>
 
         <Collection
-          data={relatedEvents?.data}
+          data={relatedEvents?.data ? relatedEvents.data : []}
           emptyTitle="No Events Found"
           emptyStateSubtext="Come back later"
           collectionType="All_Events"
           limit={3}
-          page={searchParams.page as string}
-          totalPages={relatedEvents?.totalPages}
+          page={1}
+          totalPages={2}
         />
       </section>
     </>
