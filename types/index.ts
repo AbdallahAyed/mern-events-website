@@ -1,7 +1,14 @@
 import { Event, Prisma } from "@prisma/client";
 
 export type EventWithOrganizer = Prisma.EventGetPayload<{
-  include: { organizer: true; category: true };
+  include: {
+    organizer: {
+      select: { id: true; firstName: true; lastName: true };
+    };
+    category: {
+      select: { id: true; name: true };
+    };
+  };
 }>;
 
 export type EventParams = {
@@ -32,6 +39,11 @@ export type GetRelatedEventsByCategoryParams = {
   page: number | string;
 };
 
+export type GetEventsByUserParams = {
+  userId: string | null;
+  limit?: number;
+  page: number;
+};
 // ====== URL QUERY PARAMS
 export type UrlQueryParams = {
   params: string;
