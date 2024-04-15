@@ -1,4 +1,5 @@
 import { Event, Prisma } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export type EventWithOrganizer = Prisma.EventGetPayload<{
   include: {
@@ -44,6 +45,16 @@ export type GetEventsByUserParams = {
   limit?: number;
   page: number;
 };
+
+// ====== ORDER PARAMS
+export type CheckoutOrderParams = {
+  eventTitle: string;
+  eventId: number;
+  price: Decimal | null;
+  isFree: boolean;
+  buyerId: string;
+};
+
 // ====== URL QUERY PARAMS
 export type UrlQueryParams = {
   params: string;

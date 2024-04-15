@@ -7,6 +7,7 @@ import {
 import { SearchParamProps } from "@/types";
 import { formatDateTime } from "@/lib/utils";
 import Collection from "@/components/shared/Collection";
+import CheckoutButton from "@/components/shared/CheckoutButton";
 
 export default async function EventDetails({
   params: { id },
@@ -55,7 +56,7 @@ export default async function EventDetails({
               </div>
             </div>
 
-            {/* <CheckoutButton event={event} /> */}
+            <CheckoutButton event={event} />
 
             <div className="flex flex-col gap-5">
               <div className="flex gap-2 md:gap-3">
