@@ -44,7 +44,6 @@ model Event {
   organizer   User?    @relation(fields: [organizerId], references: [clerkId])
   organizerId String
   Order       Order[]
-  orderId     String   @unique
   isCancelled Boolean?
 }
 
@@ -59,9 +58,8 @@ model Order {
   createdAt   DateTime @default(now())
   stripeId    String   @unique
   totalAmount Decimal
-
-  event   Event  @relation(fields: [eventId], references: [orderId])
-  eventId String @unique
-  buyer   User?  @relation(fields: [buyerId], references: [clerkId])
-  buyerId String
+  event       Event    @relation(fields: [eventId], references: [id])
+  eventId     Int // Changed to reference the `id` field of `Event`
+  buyer       User?    @relation(fields: [buyerId], references: [clerkId])
+  buyerId     String
 }
