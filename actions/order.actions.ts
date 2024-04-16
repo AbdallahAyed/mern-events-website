@@ -3,7 +3,9 @@
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
 
-import { CheckoutOrderParams } from "@/types";
+import { CheckoutOrderParams, CreateOrderParams } from "@/types";
+import { handleError } from "@/lib/utils";
+import { db } from "@/lib/db";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -36,5 +38,19 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
     redirect(session.url!);
   } catch (error) {
     throw error;
+  }
+};
+
+export const createOrder = async (order: CreateOrderParams) => {
+  try {
+    const newOrder = await db.order.create({
+      data: {
+        ...order,
+      },
+    });
+
+    return JSON.parse(JSON.stringify(newOrder));
+  } catch (error) {
+    handleError(error);
   }
 };

@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { handleError } from "@/lib/utils";
 import {
   EventParams,
-  EventWithOrganizer,
   GetAllEventsParams,
   GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
@@ -35,6 +34,7 @@ export async function createEvent({ userId, event, path }: any) {
         ...event,
         categoryId: parseInt(event?.categoryId),
         organizerId: userId,
+        orderId: crypto.randomUUID(),
       },
     });
 
