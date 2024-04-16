@@ -1,16 +1,22 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs";
+import { Event } from "@prisma/client";
 
 import { SearchParamProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import Collection from "@/components/shared/Collection";
 import { getEventsByUser } from "@/actions/event.actions";
+import { getOrdersByUser } from "@/actions/order.actions";
 
 export default async function ProfilePage({ searchParams }: SearchParamProps) {
-  const { userId } = auth();
+  const userId = auth()?.userId || "";
 
   const eventsPage = Number(searchParams?.eventsPage) || 1;
+  const ordersPage = Number(searchParams?.ordersPage) || 1;
 
+  const orders = await getOrdersByUser({ userId, page: ordersPage });
+
+  const orderedEvents = orders?.data.map((order: any) => order.event) || [];
   const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
 
   return (
@@ -25,8 +31,8 @@ export default async function ProfilePage({ searchParams }: SearchParamProps) {
       </section>
 
       <section className="wrapper my-8">
-        {/* <Collection
-          data={orderedEvents}
+        <Collection
+          data={orderedEvents ? orderedEvents : []}
           emptyTitle="No event tickets purchased yet"
           emptyStateSubtext="No worries - plenty of exciting events to explore!"
           collectionType="My_Tickets"
@@ -34,7 +40,7 @@ export default async function ProfilePage({ searchParams }: SearchParamProps) {
           page={ordersPage}
           urlParamName="ordersPage"
           totalPages={orders?.totalPages}
-        /> */}
+        />
       </section>
 
       {/* Events Organized */}

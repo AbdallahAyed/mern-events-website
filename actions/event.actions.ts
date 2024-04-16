@@ -199,6 +199,7 @@ export async function updateEvent(
   }
 }
 
+// GET EVENTS BY USER
 export async function getEventsByUser({
   userId,
   limit = 6,

@@ -1,4 +1,4 @@
-import { Event, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 export type EventWithOrganizer = Prisma.EventGetPayload<{
@@ -62,6 +62,7 @@ export type CreateOrderParams = {
   totalAmount: string;
   createdAt: Date;
 };
+
 // ====== URL QUERY PARAMS
 export type UrlQueryParams = {
   params: string;

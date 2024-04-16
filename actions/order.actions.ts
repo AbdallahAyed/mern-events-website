@@ -41,6 +41,7 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
   }
 };
 
+// CREATE
 export const createOrder = async (order: CreateOrderParams) => {
   try {
     const newOrder = await db.order.create({
@@ -54,3 +55,47 @@ export const createOrder = async (order: CreateOrderParams) => {
     handleError(error);
   }
 };
+
+// GET ORDERS BY USER
+export async function getOrdersByUser({
+  userId,
+  limit = 3,
+  page,
+}: {
+  userId: string;
+  limit?: number;
+  page: number;
+}) {
+  try {
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const orders = await db.order.findMany({
+      where: { buyerId: userId },
+      distinct: ["eventId"],
+      include: {
+        event: {
+          include: {
+            organizer: {
+              select: {
+                firstName: true,
+                lastName: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: skipAmount,
+      take: limit,
+    });
+
+    const ordersCount = await db.order.count({
+      where: { buyerId: userId },
+    });
+
+    return { data: orders, totalPages: Math.ceil(ordersCount / limit) };
+  } catch (error) {
+    handleError(error);
+  }
+}
