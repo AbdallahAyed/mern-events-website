@@ -1,4 +1,4 @@
-import { UrlQueryParams } from "@/types";
+import { UrlQueryParams, UrlRemoveQueryParams } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import qs from "querystring";
 import { twMerge } from "tailwind-merge";
@@ -51,15 +51,40 @@ export const formatDateTime = (dateString: Date) => {
     timeOnly: formattedTime,
   };
 };
+export const formatPrice = (price: string) => {
+  const amount = parseFloat(price);
+  const formattedPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
 
-export function formUrlQuery({ params, key, value }: any) {
+  return formattedPrice;
+};
+
+export function formUrlQuery({ params, key, value }: UrlQueryParams) {
   const currentUrl = qs.parse(params);
   currentUrl[key] = value;
 
   // Change return type to object with url and query properties
   return {
     url: window.location.pathname,
-    query: currentUrl,
+    query: qs.stringify(currentUrl), // Convert currentUrl back to a string
+  };
+}
+
+export function removeKeysFromQuery({
+  params,
+  keysToRemove,
+}: UrlRemoveQueryParams) {
+  const currentUrl = qs.parse(params);
+
+  keysToRemove.forEach((key: string) => {
+    delete currentUrl[key];
+  });
+
+  return {
+    url: window.location.pathname,
+    query: qs.stringify(currentUrl), // Convert currentUrl back to a string
   };
 }
 

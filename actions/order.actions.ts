@@ -99,3 +99,37 @@ export async function getOrdersByUser({
     handleError(error);
   }
 }
+
+// GET ORDERS BY EVENT
+export async function getOrdersByEvent({
+  searchString,
+  eventId,
+}: {
+  searchString: string;
+  eventId: string;
+}) {
+  try {
+    if (!eventId) throw new Error("Event ID is required");
+
+    const orders = await db.order.findMany({
+      where: {
+        eventId: parseInt(eventId),
+        buyer: {
+          firstName: { contains: searchString, mode: "insensitive" },
+        },
+      },
+      select: {
+        id: true,
+        totalAmount: true,
+        createdAt: true,
+        event: { select: { title: true } },
+        buyer: { select: { firstName: true, lastName: true } },
+      },
+    });
+
+    // No need for JSON parsing with Prisma
+    return { data: orders };
+  } catch (error) {
+    handleError(error);
+  }
+}

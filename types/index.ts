@@ -67,7 +67,12 @@ export type CreateOrderParams = {
 export type UrlQueryParams = {
   params: string;
   key: string;
-  value: string | null;
+  value: string | string[] | undefined;
+};
+
+export type UrlRemoveQueryParams = {
+  params: string;
+  keysToRemove: string[];
 };
 
 export type SearchParamProps = {
