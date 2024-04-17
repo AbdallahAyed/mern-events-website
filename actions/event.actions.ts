@@ -34,7 +34,6 @@ export async function createEvent({ userId, event, path }: any) {
         ...event,
         categoryId: parseInt(event?.categoryId),
         organizerId: userId,
-        orderId: crypto.randomUUID(),
       },
     });
 
