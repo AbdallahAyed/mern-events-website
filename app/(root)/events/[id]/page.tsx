@@ -110,8 +110,8 @@ export default async function EventDetails({
           emptyStateSubtext="Come back later"
           collectionType="All_Events"
           limit={3}
-          page={1}
-          totalPages={2}
+          page={(searchParams.page as string) || "1"}
+          totalPages={relatedEvents?.totalPages}
         />
       </section>
     </>
