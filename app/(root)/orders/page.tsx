@@ -8,9 +8,7 @@ export default async function OrdersPage({ searchParams }: SearchParamProps) {
   const searchText = (searchParams?.query as string) || "";
 
   const orders = await getOrdersByEvent({ eventId, searchString: searchText });
-
-  console.log(orders);
-
+  
   return (
     <div className="h-[78vh]">
       <section className="wrapper bg-primary-50 bg-dotted-pattern bg-cover bg-center py-1 h-full">

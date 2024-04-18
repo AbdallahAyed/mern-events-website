@@ -10,14 +10,6 @@ import {
 } from "@/types";
 import { revalidatePath } from "next/cache";
 
-const getCategoryByName = async (name: string) => {
-  return db.category.findUnique({
-    where: {
-      name: name,
-    },
-  });
-};
-
 // CREATE
 export async function createEvent({ userId, event, path }: any) {
   try {
